@@ -1,0 +1,36 @@
+{
+  "name": "aggregate-metric-logger",
+  "version": "1.0.0",
+  "description": "aggregate metrics in memory for logging",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "mocha 'src/*.spec.js'",
+    "test:watch": "mocha 'src/*.spec.js' --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mkls/aggregate-metric-logger.git"
+  },
+  "keywords": [
+    "metric",
+    "logger",
+    "aggregate"
+  ],
+  "author": "mkls",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mkls/aggregate-metric-logger/issues"
+  },
+  "homepage": "https://github.com/mkls/aggregate-metric-logger#readme",
+  "dependencies": {
+    "@emartech/json-logger": "^3.1.0",
+    "date-fns": "^2.3.0",
+    "uuid": "^3.3.3"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^6.2.0",
+    "sinon": "^7.5.0",
+    "sinon-chai": "^3.3.0"
+  }
+}
