@@ -50,6 +50,46 @@ describe('metricLogger', () => {
         avarage: 18
       });
     });
+
+    it('should log counts for each combination of extra params provedid within a tag', () => {
+      metricLogger.count('elfogyasztot-tap', 4, { emberke: 'bela' });
+      metricLogger.count('elfogyasztot-tap', 8, { emberke: 'bela' });
+      metricLogger.count('elfogyasztot-tap', 18, { emberke: 'jano' });
+
+      clock.tick(60 * 1000 + 1);
+      expect(Logger.prototype.info).toBeCalledWith('elfogyasztot-tap', {
+        min: 4,
+        max: 8,
+        count: 2,
+        sum: 12,
+        avarage: 6,
+        emberke: 'bela'
+      });
+      expect(Logger.prototype.info).toBeCalledWith('elfogyasztot-tap', {
+        min: 18,
+        max: 18,
+        count: 1,
+        sum: 18,
+        avarage: 18,
+        emberke: 'jano'
+      });
+    });
+
+    it('should group logs with same tag and deeply equal params together', () => {
+      metricLogger.count('elfogyasztot-tap', 4, { a: 1, b: 2 });
+      metricLogger.count('elfogyasztot-tap', 8, { b: 2, a: 1 });
+
+      clock.tick(60 * 1000 + 1);
+      expect(Logger.prototype.info).toBeCalledWith('elfogyasztot-tap', {
+        min: 4,
+        max: 8,
+        count: 2,
+        sum: 12,
+        avarage: 6,
+        a: 1,
+        b: 2
+      });
+    });
   });
 
   describe('start/stop', () => {
@@ -135,8 +175,8 @@ describe('metricLogger', () => {
       });
     });
 
-    it('should log measurements for multiple tags', () => {
-      const measurement1 = metricLogger.start('utlegeles');
+    it('should log measurements for multiple tags and include extra parameters', () => {
+      const measurement1 = metricLogger.start('utlegeles', { a: 21 });
       const measurement2 = metricLogger.start('nyavogas');
       clock.tick(10 * 1000);
       metricLogger.stop(measurement1);
@@ -149,7 +189,8 @@ describe('metricLogger', () => {
         max: 10000,
         min: 10000,
         sum: 10000,
-        avarage: 10000
+        avarage: 10000,
+        a: 21
       });
       expect(Logger.prototype.info).toBeCalledWith('nyavogas', {
         count: 1,

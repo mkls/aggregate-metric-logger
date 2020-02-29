@@ -3,17 +3,19 @@
 const uuid = require('uuid/v4');
 const loggerFactory = require('@emartech/json-logger');
 const { getSeconds, startOfMinute, addSeconds } = require('date-fns');
+const { omit, pick } = require('lodash');
+const stringify = require('json-stable-stringify');
 
 module.exports = ({ enabled = true, namespace = 'aggregate-metric-logger' } = {}) => {
   const logger = loggerFactory(namespace);
 
   let measurements = {};
-  let metricsByTag = {};
+  let metrics = {};
   let initialized = false;
 
   const flush = () => {
     logMetrics();
-    metricsByTag = {};
+    metrics = {};
     setupNextFlush();
   };
 
@@ -25,9 +27,12 @@ module.exports = ({ enabled = true, namespace = 'aggregate-metric-logger' } = {}
     setTimeout(flush, timeout);
   };
 
-  const addMeasurement = ({ tag, value }) => {
-    if (!metricsByTag[tag]) {
-      metricsByTag[tag] = {
+  const addMeasurement = ({ tag, value, params }) => {
+    const key = `${tag}_${stringify(params)}`;
+    if (!metrics[key]) {
+      metrics[key] = {
+        tag,
+        ...params,
         min: value,
         max: value,
         sum: value,
@@ -35,20 +40,20 @@ module.exports = ({ enabled = true, namespace = 'aggregate-metric-logger' } = {}
         avarage: value
       };
     } else {
-      const metricsSoFar = metricsByTag[tag];
-      metricsByTag[tag].min = Math.min(metricsSoFar.min, value);
-      metricsByTag[tag].max = Math.max(metricsSoFar.max, value);
-      metricsByTag[tag].sum = metricsSoFar.sum + value;
-      metricsByTag[tag].count = metricsSoFar.count + 1;
-      metricsByTag[tag].avarage = metricsByTag[tag].sum / metricsByTag[tag].count
+      const metricsSoFar = metrics[key];
+      metrics[key].min = Math.min(metricsSoFar.min, value);
+      metrics[key].max = Math.max(metricsSoFar.max, value);
+      metrics[key].sum = metricsSoFar.sum + value;
+      metrics[key].count = metricsSoFar.count + 1;
+      metrics[key].avarage = metrics[key].sum / metrics[key].count
     }
   };
 
   const logMetrics = () =>
-    Object.entries(metricsByTag).forEach(([tag, metrics]) => logger.info(tag, metrics));
+    Object.values(metrics).forEach(metrics => logger.info(metrics.tag, omit(metrics, ['tag'])));
 
   return {
-    count(tag, value) {
+    count(tag, value, params) {
       if (!enabled) {
         return;
       }
@@ -56,9 +61,9 @@ module.exports = ({ enabled = true, namespace = 'aggregate-metric-logger' } = {}
         setupNextFlush();
         initialized = true;
       }
-      addMeasurement({ tag, value });
+      addMeasurement({ tag, value, params });
     },
-    start(tag) {
+    start(tag, params) {
       if (!enabled) {
         return;
       }
@@ -68,7 +73,7 @@ module.exports = ({ enabled = true, namespace = 'aggregate-metric-logger' } = {}
       }
 
       const id = uuid();
-      measurements[id] = { tag, start: Date.now() };
+      measurements[id] = { tag, params, start: Date.now() };
       return id;
     },
     stop(measurementId) {
@@ -79,7 +84,10 @@ module.exports = ({ enabled = true, namespace = 'aggregate-metric-logger' } = {}
       if (!measurement) {
         return;
       }
-      addMeasurement({ tag: measurement.tag, value: Date.now() - measurement.start });
+      addMeasurement({
+        ...pick(measurement, ['tag', 'params']),
+        value: Date.now() - measurement.start
+      });
       delete measurements[measurementId];
     }
   };
