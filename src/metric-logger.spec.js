@@ -201,4 +201,18 @@ describe('metricLogger', () => {
       });
     });
   });
+
+  describe('simple count one log methods', () => {
+    it.each(
+      ['trace', 'debug', 'info', 'warn', 'error', 'fatal']
+    )('should log a only the count when %s method is called', method => {
+      jest.spyOn(Logger.prototype, method);
+
+      metricLogger[method]('elfogyasztot-tap', { alma: 2 });
+      metricLogger[method]('elfogyasztot-tap', { alma: 2 });
+
+      clock.tick(60 * 1000 + 11500);
+      expect(Logger.prototype[method]).toBeCalledWith('elfogyasztot-tap', { count: 2, alma: 2 });
+    });
+  });
 });

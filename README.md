@@ -11,6 +11,24 @@ To change the default `aggregate-metric-logger` namespace used for logs, set
 
 ## Usage
 
+The package exposes similar logging methods as the `@emartech/json-logger` package:
+`trace`, `debug`, `info`, `warn`, `error` and `fatal`.
+
+When these are called, it will aggregate logs with the same parameters withing a minute, add
+an extra `count` property to the logs and log them at the end of the minute with
+`@emartech/json-logger`.
+
+```js
+const metrictLogger = require('aggregate-metric-logger')
+
+metricLogger.warn('etwas-went-wrong', { customer_id: 11 });
+metricLogger.warn('etwas-went-wrong', { customer_id: 11 });
+
+// will aggrete these to a single warning log
+```
+
+### Count values
+
 If you want aggregate measuremts about something you need to simply call the call method
 for each value:
 
