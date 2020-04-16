@@ -39,7 +39,7 @@ metricLogger.count('thing-to-count', 14)
 metricLogger.count('thing-to-count', 20)
 ```
 
-Every minute metric logger will log `min`, `max`, `sum`, `count` and `avarage` aggregated metrics
+Every minute metric logger will log `min`, `max`, `sum`, `count` and `average` aggregated metrics
 for each measured tags. (Uses `@emartech/json-logger` behind the scenes for logging).
 
 ### Measuring durations

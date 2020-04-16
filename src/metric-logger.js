@@ -39,7 +39,7 @@ module.exports = ({ enabled = true, namespace = 'aggregate-metric-logger' } = {}
     if (!metrics[key]) {
       const metricForKey = { method, tag, ...params, count: 1 };
       if (!countOnly) {
-        metricForKey.min = metricForKey.max = metricForKey.sum = metricForKey.avarage = value;
+        metricForKey.min = metricForKey.max = metricForKey.sum = metricForKey.average = value;
       }
       metrics[key] = metricForKey;
     } else {
@@ -49,7 +49,7 @@ module.exports = ({ enabled = true, namespace = 'aggregate-metric-logger' } = {}
         metrics[key].min = Math.min(metricsSoFar.min, value);
         metrics[key].max = Math.max(metricsSoFar.max, value);
         metrics[key].sum = metricsSoFar.sum + value;
-        metrics[key].avarage = metrics[key].sum / metrics[key].count;
+        metrics[key].average = metrics[key].sum / metrics[key].count;
       }
     }
   };

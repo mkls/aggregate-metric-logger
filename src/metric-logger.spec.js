@@ -25,7 +25,7 @@ describe('metricLogger', () => {
         max: 4,
         count: 1,
         sum: 4,
-        avarage: 4
+        average: 4
       });
     });
 
@@ -40,14 +40,14 @@ describe('metricLogger', () => {
         max: 8,
         count: 2,
         sum: 12,
-        avarage: 6
+        average: 6
       });
       expect(Logger.prototype.info).toBeCalledWith('kacsa-cucc', {
         min: 18,
         max: 18,
         count: 1,
         sum: 18,
-        avarage: 18
+        average: 18
       });
     });
 
@@ -62,7 +62,7 @@ describe('metricLogger', () => {
         max: 8,
         count: 2,
         sum: 12,
-        avarage: 6,
+        average: 6,
         emberke: 'bela'
       });
       expect(Logger.prototype.info).toBeCalledWith('elfogyasztot-tap', {
@@ -70,7 +70,7 @@ describe('metricLogger', () => {
         max: 18,
         count: 1,
         sum: 18,
-        avarage: 18,
+        average: 18,
         emberke: 'jano'
       });
     });
@@ -85,7 +85,7 @@ describe('metricLogger', () => {
         max: 8,
         count: 2,
         sum: 12,
-        avarage: 6,
+        average: 6,
         a: 1,
         b: 2
       });
@@ -104,7 +104,7 @@ describe('metricLogger', () => {
         max: 50,
         count: 1,
         sum: 50,
-        avarage: 50
+        average: 50
       });
     });
 
@@ -122,7 +122,7 @@ describe('metricLogger', () => {
         max: 70,
         sum: 120,
         count: 2,
-        avarage: 60
+        average: 60
       });
     });
 
@@ -160,7 +160,7 @@ describe('metricLogger', () => {
         max: 10000,
         min: 10000,
         sum: 10000,
-        avarage: 10000
+        average: 10000
       });
 
       metricLogger.stop(measurement2);
@@ -171,7 +171,7 @@ describe('metricLogger', () => {
         max: 31000,
         min: 21000,
         sum: 52000,
-        avarage: 26000
+        average: 26000
       });
     });
 
@@ -189,7 +189,7 @@ describe('metricLogger', () => {
         max: 10000,
         min: 10000,
         sum: 10000,
-        avarage: 10000,
+        average: 10000,
         a: 21
       });
       expect(Logger.prototype.info).toBeCalledWith('nyavogas', {
@@ -197,7 +197,7 @@ describe('metricLogger', () => {
         max: 15000,
         min: 15000,
         sum: 15000,
-        avarage: 15000
+        average: 15000
       });
     });
   });
