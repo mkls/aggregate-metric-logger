@@ -3,13 +3,14 @@
 const uuid = require('uuid/v4');
 const loggerFactory = require('@emartech/json-logger');
 const { getSeconds, startOfMinute, addSeconds } = require('date-fns');
-const { omit, pick } = require('lodash');
+const { omit, pick, fromPairs, toPairs } = require('lodash');
 const stringify = require('json-stable-stringify');
 const util = require('util');
 
 module.exports = ({ enabled = true, namespace = 'aggregate-metric-logger' } = {}) => {
   const logger = loggerFactory(namespace);
 
+  const thresholdsByTag = {};
   let measurements = {};
   let metrics = {};
   let initialized = false;
@@ -28,6 +29,18 @@ module.exports = ({ enabled = true, namespace = 'aggregate-metric-logger' } = {}
     setTimeout(flush, timeout);
   };
 
+  const incrementThresholdCount = (tag, value, countsSoFar) => {
+    const thresholds = thresholdsByTag[tag];
+    if (!thresholds) return countsSoFar;
+
+    const newCounts = {};
+    thresholds.forEach(threshold => {
+      const previousCount = countsSoFar[threshold] || 0;
+      newCounts[threshold] = value < threshold ? previousCount + 1 : previousCount;
+    });
+    return newCounts;
+  };
+
   const addMeasurement = ({ tag, value, params, method = 'info', countOnly = false }) => {
     if (!enabled) return;
 
@@ -41,6 +54,7 @@ module.exports = ({ enabled = true, namespace = 'aggregate-metric-logger' } = {}
       const metricForKey = { method, tag, ...params, count: 1 };
       if (!countOnly) {
         metricForKey.min = metricForKey.max = metricForKey.sum = metricForKey.average = value;
+        metricForKey.thresholdCounts = incrementThresholdCount(tag, value, {});
       }
       metrics[key] = metricForKey;
     } else {
@@ -51,17 +65,31 @@ module.exports = ({ enabled = true, namespace = 'aggregate-metric-logger' } = {}
         metrics[key].max = Math.max(metricsSoFar.max, value);
         metrics[key].sum = metricsSoFar.sum + value;
         metrics[key].average = metrics[key].sum / metrics[key].count;
+        metrics[key].thresholdCounts = incrementThresholdCount(
+          tag,
+          value,
+          metricsSoFar.thresholdCounts
+        );
       }
     }
   };
 
   const logMetrics = () => {
-    Object.values(metrics).forEach(metrics =>
-      logger[metrics.method](metrics.tag, omit(metrics, ['tag', 'method']))
-    );
+    Object.values(metrics).forEach(metrics => {
+      const params = {
+        ...omit(metrics, ['tag', 'method', 'thresholdCounts']),
+        ...fromPairs(
+          toPairs(metrics.thresholdCounts).map(([limit, count]) => [`below_${limit}`, count])
+        )
+      };
+      logger[metrics.method](metrics.tag, params);
+    });
   };
 
   return {
+    setThresholds(tag, thresholds) {
+      thresholdsByTag[tag] = thresholds;
+    },
     measure(tag, value, params) {
       addMeasurement({ tag, value, params });
     },

@@ -90,6 +90,30 @@ describe('metricLogger', () => {
         b: 2
       });
     });
+
+    it('should count event distribution within specified thresholds', () => {
+      metricLogger.setThresholds('etwas', [1, 10, 20]);
+
+      metricLogger.measure('etwas', 2);
+      metricLogger.measure('etwas', 3);
+      metricLogger.measure('etwas', 4);
+      metricLogger.measure('etwas', 4);
+      metricLogger.measure('etwas', 11);
+      metricLogger.measure('etwas', 12);
+      metricLogger.measure('etwas', 818);
+
+      clock.tick(60 * 1000 + 1);
+      expect(Logger.prototype.info).toBeCalledWith('etwas', {
+        min: 2,
+        max: 818,
+        count: 7,
+        sum: 854,
+        average: 122,
+        below_1: 0,
+        below_10: 4,
+        below_20: 6
+      });
+    });
   });
 
   describe('start/stop', () => {
