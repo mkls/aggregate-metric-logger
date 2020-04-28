@@ -15,9 +15,9 @@ beforeEach(() => {
 afterEach(() => clock.uninstall());
 
 describe('metricLogger', () => {
-  describe('count', () => {
+  describe('measure', () => {
     it('should log a single measurement at the next flush period', () => {
-      metricLogger.count('elfogyasztot-tap', 4);
+      metricLogger.measure('elfogyasztot-tap', 4);
 
       clock.tick(60 * 1000 + 1);
       expect(Logger.prototype.info).toBeCalledWith('elfogyasztot-tap', {
@@ -30,9 +30,9 @@ describe('metricLogger', () => {
     });
 
     it('should aggregate measurements withing a flush period', () => {
-      metricLogger.count('elfogyasztot-tap', 4);
-      metricLogger.count('elfogyasztot-tap', 8);
-      metricLogger.count('kacsa-cucc', 18);
+      metricLogger.measure('elfogyasztot-tap', 4);
+      metricLogger.measure('elfogyasztot-tap', 8);
+      metricLogger.measure('kacsa-cucc', 18);
 
       clock.tick(60 * 1000 + 1);
       expect(Logger.prototype.info).toBeCalledWith('elfogyasztot-tap', {
@@ -52,9 +52,9 @@ describe('metricLogger', () => {
     });
 
     it('should log counts for each combination of extra params provedid within a tag', () => {
-      metricLogger.count('elfogyasztot-tap', 4, { emberke: 'bela' });
-      metricLogger.count('elfogyasztot-tap', 8, { emberke: 'bela' });
-      metricLogger.count('elfogyasztot-tap', 18, { emberke: 'jano' });
+      metricLogger.measure('elfogyasztot-tap', 4, { emberke: 'bela' });
+      metricLogger.measure('elfogyasztot-tap', 8, { emberke: 'bela' });
+      metricLogger.measure('elfogyasztot-tap', 18, { emberke: 'jano' });
 
       clock.tick(60 * 1000 + 1);
       expect(Logger.prototype.info).toBeCalledWith('elfogyasztot-tap', {
@@ -76,8 +76,8 @@ describe('metricLogger', () => {
     });
 
     it('should group logs with same tag and deeply equal params together', () => {
-      metricLogger.count('elfogyasztot-tap', 4, { a: 1, b: 2 });
-      metricLogger.count('elfogyasztot-tap', 8, { b: 2, a: 1 });
+      metricLogger.measure('elfogyasztot-tap', 4, { a: 1, b: 2 });
+      metricLogger.measure('elfogyasztot-tap', 8, { b: 2, a: 1 });
 
       clock.tick(60 * 1000 + 1);
       expect(Logger.prototype.info).toBeCalledWith('elfogyasztot-tap', {

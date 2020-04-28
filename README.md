@@ -27,16 +27,16 @@ metricLogger.warn('etwas-went-wrong', { customer_id: 11 });
 // will aggrete these to a single warning log
 ```
 
-### Count values
+### Measure values
 
-If you want aggregate measuremts about something you need to simply call the call method
+If you want aggregate measuremts about something you need to simply call the `measure` method
 for each value:
 
 ```js
 const metrictLogger = require('aggregate-metric-logger')
 
-metricLogger.count('thing-to-count', 14)
-metricLogger.count('thing-to-count', 20)
+metricLogger.measure('thing-to-measure', 14)
+metricLogger.measure('thing-to-measure', 20)
 ```
 
 Every minute metric logger will log `min`, `max`, `sum`, `count` and `average` aggregated metrics
