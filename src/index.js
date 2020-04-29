@@ -14,11 +14,11 @@ exposedFactoryInstanceHybrid.measure = exposedInstance.measure;
 exposedFactoryInstanceHybrid.count = exposedInstance.count;
 exposedFactoryInstanceHybrid.trace = exposedInstance.trace;
 exposedFactoryInstanceHybrid.debug = exposedInstance.debug;
-exposedFactoryInstanceHybrid.debug = exposedInstance.info;
-exposedFactoryInstanceHybrid.debug = exposedInstance.warn;
-exposedFactoryInstanceHybrid.debug = exposedInstance.error;
-exposedFactoryInstanceHybrid.debug = exposedInstance.fatal;
-exposedFactoryInstanceHybrid.debug = exposedInstance.start;
-exposedFactoryInstanceHybrid.debug = exposedInstance.stop;
+exposedFactoryInstanceHybrid.info = exposedInstance.info;
+exposedFactoryInstanceHybrid.warn = exposedInstance.warn;
+exposedFactoryInstanceHybrid.error = exposedInstance.error;
+exposedFactoryInstanceHybrid.fatal = exposedInstance.fatal;
+exposedFactoryInstanceHybrid.start = exposedInstance.start;
+exposedFactoryInstanceHybrid.stop = exposedInstance.stop;
 
 module.exports = exposedFactoryInstanceHybrid;
