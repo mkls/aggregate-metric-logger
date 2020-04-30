@@ -33,12 +33,11 @@ module.exports = ({ enabled = true, namespace = 'aggregate-metric-logger' } = {}
     const thresholds = thresholdsByTag[tag];
     if (!thresholds) return countsSoFar;
 
-    const newCounts = {};
-    thresholds.forEach(threshold => {
+    return fromPairs(thresholds.map(threshold => {
       const previousCount = countsSoFar[threshold] || 0;
-      newCounts[threshold] = value < threshold ? previousCount + 1 : previousCount;
-    });
-    return newCounts;
+      const newCount = value > threshold ? previousCount + 1 : previousCount;
+      return [threshold, newCount];
+    }));
   };
 
   const addMeasurement = ({ tag, value, params, method = 'info', countOnly = false }) => {
@@ -79,7 +78,7 @@ module.exports = ({ enabled = true, namespace = 'aggregate-metric-logger' } = {}
       const params = {
         ...omit(metrics, ['tag', 'method', 'thresholdCounts']),
         ...fromPairs(
-          toPairs(metrics.thresholdCounts).map(([limit, count]) => [`below_${limit}`, count])
+          toPairs(metrics.thresholdCounts).map(([limit, count]) => [`above_${limit}`, count])
         )
       };
       logger[metrics.method](metrics.tag, params);
