@@ -89,32 +89,32 @@ module.exports = ({ enabled = true, namespace = 'aggregate-metric-logger' } = {}
     setThresholds(tag, thresholds) {
       thresholdsByTag[tag] = thresholds;
     },
-    measure(tag, value, params) {
+    measure(tag, value, params = {}) {
       addMeasurement({ tag, value, params });
     },
     count: util.deprecate(
-      (tag, value, params) => addMeasurement({ tag, value, params }),
+      (tag, value, params = {}) => addMeasurement({ tag, value, params }),
       'count method is deprecated, use measure instead'
     ),
-    trace(tag, params) {
+    trace(tag, params = {}) {
       addMeasurement({ method: 'trace', tag, params, value: 1, countOnly: true });
     },
-    debug(tag, params) {
+    debug(tag, params = {}) {
       addMeasurement({ method: 'debug', tag, params, value: 1, countOnly: true });
     },
-    info(tag, params) {
+    info(tag, params = {}) {
       addMeasurement({ method: 'info', tag, params, value: 1, countOnly: true });
     },
-    warn(tag, params) {
+    warn(tag, params = {}) {
       addMeasurement({ method: 'warn', tag, params, value: 1, countOnly: true });
     },
-    error(tag, params) {
+    error(tag, params = {}) {
       addMeasurement({ method: 'error', tag, params, value: 1, countOnly: true });
     },
-    fatal(tag, params) {
+    fatal(tag, params = {}) {
       addMeasurement({ method: 'fatal', tag, params, value: 1, countOnly: true });
     },
-    start(tag, params) {
+    start(tag, params = {}) {
       const id = uuid();
       measurements[id] = { tag, params, start: Date.now() };
       return id;
