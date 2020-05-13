@@ -25,7 +25,8 @@ describe('metricLogger', () => {
         max: 4,
         count: 1,
         sum: 4,
-        average: 4
+        average: 4,
+        is_metric: true
       });
     });
 
@@ -40,14 +41,16 @@ describe('metricLogger', () => {
         max: 8,
         count: 2,
         sum: 12,
-        average: 6
+        average: 6,
+        is_metric: true
       });
       expect(Logger.prototype.info).toBeCalledWith('kacsa-cucc', {
         min: 18,
         max: 18,
         count: 1,
         sum: 18,
-        average: 18
+        average: 18,
+        is_metric: true
       });
     });
 
@@ -63,7 +66,8 @@ describe('metricLogger', () => {
         count: 2,
         sum: 12,
         average: 6,
-        emberke: 'bela'
+        emberke: 'bela',
+        is_metric: true
       });
       expect(Logger.prototype.info).toBeCalledWith('elfogyasztot-tap', {
         min: 18,
@@ -71,7 +75,8 @@ describe('metricLogger', () => {
         count: 1,
         sum: 18,
         average: 18,
-        emberke: 'jano'
+        emberke: 'jano',
+        is_metric: true
       });
     });
 
@@ -87,7 +92,8 @@ describe('metricLogger', () => {
         sum: 12,
         average: 6,
         a: 1,
-        b: 2
+        b: 2,
+        is_metric: true
       });
     });
 
@@ -112,7 +118,8 @@ describe('metricLogger', () => {
         above_5: 4,
         above_10: 3,
         above_20: 1,
-        above_1000: 0
+        above_1000: 0,
+        is_metric: true
       });
     });
   });
@@ -129,7 +136,8 @@ describe('metricLogger', () => {
         max: 50,
         count: 1,
         sum: 50,
-        average: 50
+        average: 50,
+        is_metric: true
       });
     });
 
@@ -147,7 +155,8 @@ describe('metricLogger', () => {
         max: 70,
         sum: 120,
         count: 2,
-        average: 60
+        average: 60,
+        is_metric: true
       });
     });
 
@@ -185,7 +194,8 @@ describe('metricLogger', () => {
         max: 10000,
         min: 10000,
         sum: 10000,
-        average: 10000
+        average: 10000,
+        is_metric: true
       });
 
       metricLogger.stop(measurement2);
@@ -196,7 +206,8 @@ describe('metricLogger', () => {
         max: 31000,
         min: 21000,
         sum: 52000,
-        average: 26000
+        average: 26000,
+        is_metric: true
       });
     });
 
@@ -215,29 +226,36 @@ describe('metricLogger', () => {
         min: 10000,
         sum: 10000,
         average: 10000,
-        a: 21
+        a: 21,
+        is_metric: true
       });
       expect(Logger.prototype.info).toBeCalledWith('nyavogas', {
         count: 1,
         max: 15000,
         min: 15000,
         sum: 15000,
-        average: 15000
+        average: 15000,
+        is_metric: true
       });
     });
   });
 
   describe('simple count one log methods', () => {
-    it.each(
-      ['trace', 'debug', 'info', 'warn', 'error', 'fatal']
-    )('should log a only the count when %s method is called', method => {
-      jest.spyOn(Logger.prototype, method);
+    it.each(['trace', 'debug', 'info', 'warn', 'error', 'fatal'])(
+      'should log a only the count when %s method is called',
+      method => {
+        jest.spyOn(Logger.prototype, method);
 
-      metricLogger[method]('elfogyasztot-tap', { alma: 2 });
-      metricLogger[method]('elfogyasztot-tap', { alma: 2 });
+        metricLogger[method]('elfogyasztot-tap', { alma: 2 });
+        metricLogger[method]('elfogyasztot-tap', { alma: 2 });
 
-      clock.tick(60 * 1000 + 11500);
-      expect(Logger.prototype[method]).toBeCalledWith('elfogyasztot-tap', { count: 2, alma: 2 });
-    });
+        clock.tick(60 * 1000 + 11500);
+        expect(Logger.prototype[method]).toBeCalledWith('elfogyasztot-tap', {
+          count: 2,
+          alma: 2,
+          is_metric: true
+        });
+      }
+    );
   });
 });

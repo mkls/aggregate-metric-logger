@@ -76,6 +76,7 @@ module.exports = ({ enabled = true, namespace = 'aggregate-metric-logger' } = {}
   const logMetrics = () => {
     Object.values(metrics).forEach(metrics => {
       const params = {
+        is_metric: true,
         ...omit(metrics, ['tag', 'method', 'thresholdCounts']),
         ...fromPairs(
           toPairs(metrics.thresholdCounts).map(([limit, count]) => [`above_${limit}`, count])
