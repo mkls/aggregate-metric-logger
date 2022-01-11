@@ -129,6 +129,9 @@ module.exports = ({ enabled = true, namespace = 'aggregate-metric-logger' } = {}
         value: Date.now() - measurement.start
       });
       delete measurements[measurementId];
+    },
+    cancel(measurementId) {
+      delete measurements[measurementId];
     }
   };
 };

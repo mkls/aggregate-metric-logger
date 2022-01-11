@@ -160,6 +160,21 @@ describe('metricLogger', () => {
       });
     });
 
+    it('should not count a measurment if it is cancelled with cancel', () => {
+      const measurement1Id = metricLogger.start('utlegeles');
+      const measurement2Id = metricLogger.start('utlegeles');
+      clock.tick(50);
+      metricLogger.stop(measurement1Id);
+      clock.tick(20);
+      metricLogger.cancel(measurement2Id);
+      metricLogger.stop(measurement2Id);
+
+      clock.tick(60 * 1000);
+      expect(Logger.prototype.info).toBeCalledWith('utlegeles', expect.objectContaining({
+        count: 1
+      }));
+    });
+
     it('should flush results at the closes minute:30', () => {
       const measurementId = metricLogger.start('utlegeles');
       metricLogger.stop(measurementId);
