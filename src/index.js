@@ -20,5 +20,6 @@ exposedFactoryInstanceHybrid.error = exposedInstance.error;
 exposedFactoryInstanceHybrid.fatal = exposedInstance.fatal;
 exposedFactoryInstanceHybrid.start = exposedInstance.start;
 exposedFactoryInstanceHybrid.stop = exposedInstance.stop;
+exposedFactoryInstanceHybrid.cancel = exposedInstance.cancel;
 
 module.exports = exposedFactoryInstanceHybrid;
