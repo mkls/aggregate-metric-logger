@@ -253,6 +253,18 @@ describe('metricLogger', () => {
         is_metric: true
       });
     });
+
+    it('should log warning if there are too many measurments in progress', () => {
+      jest.spyOn(Logger.prototype, 'warn');
+      const metricLogger = metricLoggerFactory({ inProgressMeasurementWarningLimit: 1 });
+
+      metricLogger.measure('kacsa');
+      metricLogger.start('nyavogas');
+      metricLogger.start('nyavogas');
+      clock.tick(60 * 1000);
+
+      expect(Logger.prototype.warn).toBeCalledWith('too-many-in-progress-metric-log-measurments');
+    });
   });
 
   describe('simple count one log methods', () => {

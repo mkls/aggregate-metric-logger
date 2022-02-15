@@ -7,7 +7,11 @@ const { omit, pick, fromPairs, toPairs } = require('lodash');
 const stringify = require('json-stable-stringify');
 const util = require('util');
 
-module.exports = ({ enabled = true, namespace = 'aggregate-metric-logger' } = {}) => {
+module.exports = ({
+  enabled = true,
+  namespace = 'aggregate-metric-logger',
+  inProgressMeasurementWarningLimit = 10000
+} = {}) => {
   const logger = loggerFactory(namespace);
 
   const thresholdsByTag = {};
@@ -17,6 +21,9 @@ module.exports = ({ enabled = true, namespace = 'aggregate-metric-logger' } = {}
 
   const flush = () => {
     logMetrics();
+    if (Object.keys(measurements).length > inProgressMeasurementWarningLimit) {
+      logger.warn('too-many-in-progress-metric-log-measurments');
+    }
     metrics = {};
     setupNextFlush();
   };
