@@ -3,9 +3,13 @@
 const metricLoggerFactory = require('./metric-logger');
 
 const enabled = process.env.METRIC_LOGGER_ENABLED === 'true';
+const inProgressMeasurementWarningLimit =
+  parseInt(process.env.METRIC_LOGGER_IN_PROGRESS_MEASUREMENT_WARNING_LIMIT, 10) || 10000;
+
 const exposedInstance = metricLoggerFactory({
   enabled,
-  namespace: process.env.METRIC_LOGGER_NAMESPACE || 'aggregate-metric-logger'
+  namespace: process.env.METRIC_LOGGER_NAMESPACE || 'aggregate-metric-logger',
+  inProgressMeasurementWarningLimit
 });
 const exposedFactoryInstanceHybrid = namespace => metricLoggerFactory({ enabled, namespace });
 
