@@ -21,8 +21,9 @@ module.exports = ({
 
   const flush = () => {
     logMetrics();
-    if (Object.keys(measurements).length > inProgressMeasurementWarningLimit) {
-      logger.warn('too-many-in-progress-metric-log-measurments');
+    const inProgressMeasurementCount = Object.keys(measurements).length;
+    if (inProgressMeasurementCount > inProgressMeasurementWarningLimit) {
+      logger.warn('too-many-in-progress-metric-log-measurments', { count: inProgressMeasurementCount });
     }
     metrics = {};
     setupNextFlush();
