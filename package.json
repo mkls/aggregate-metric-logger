@@ -1,6 +1,6 @@
 {
   "name": "aggregate-metric-logger",
-  "version": "1.9.0",
+  "version": "1.9.1",
   "description": "aggregate metrics in memory for logging",
   "main": "src/index.js",
   "scripts": {
